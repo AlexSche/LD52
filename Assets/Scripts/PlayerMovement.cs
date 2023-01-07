@@ -38,7 +38,6 @@ public class PlayerMovement : MonoBehaviour
             Move(new CallbackContext());
         }
         int amount = PlayerPrefs.GetInt("collectedDiamonds", 0);
-        Debug.Log(amount);
         collectedDiamondsText.text = amount.ToString();
     }
 
@@ -64,7 +63,6 @@ public class PlayerMovement : MonoBehaviour
             //if Ladder climb up
             Vector3Int gridPosition = map.WorldToCell(transform.position);
             if (background.HasTile(gridPosition)) {
-                Debug.Log("Move up!");
                 Vector3 targetVelocity = new Vector2(rb2D.velocity.x, moveDirection.y * movementSpeed);
                 rb2D.velocity = targetVelocity;
             }
