@@ -42,7 +42,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(CallbackContext context) {
         moveDirection = playerInput.Player.Move.ReadValue<Vector2>();
-        Debug.Log(moveDirection);
         if (moveDirection.x != 0) {
             // Move the character by finding the target velocity
 			Vector3 targetVelocity = new Vector2(moveDirection.x * movementSpeed, rb2D.velocity.y);
@@ -75,6 +74,11 @@ public class PlayerMovement : MonoBehaviour
         // Remove looked at tile
         // Check if position is on a tile
         if (map.HasTile(gridPosition)) {
+            // If tile contains resources -> collect
+            TileBase tileToDestory = map.GetTile(gridPosition);
+            if (tileToDestory.name == "Diamonds") {
+                Debug.Log("collect!");
+            }
             map.SetTile(gridPosition,null);
         }
         // If direction was down place a ladder
