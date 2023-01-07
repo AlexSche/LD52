@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using static UnityEngine.InputSystem.InputAction;
 
 public class PlayerMovement : MonoBehaviour
@@ -10,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public Tilemap map;
     public Tilemap background;
     public TileBase ladder;
+    public Text generatorWarning;
     private PlayerInput playerInput;
     private Vector2 moveDirection = Vector2.zero;
     private Vector3 velocity = Vector3.zero;
@@ -93,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
         if (IsNearGenerator()) {
             SaveCollectedDiamonds();
         } else {
-            Debug.Log("Get near a generator!");
+            ShowWarning("Get near a generator to return resources!");
         }
     }
 
@@ -120,5 +122,15 @@ public class PlayerMovement : MonoBehaviour
         PlayerPrefs.SetInt("collectedDiamonds", PlayerPrefs.GetInt("collectedDiamonds",0) + collectedDiamonds);
         PlayerPrefs.Save();
         collectedDiamonds = 0;
+    }
+
+    void ShowWarning(string msg) {
+        generatorWarning.text = msg;
+        generatorWarning.enabled = true;
+        Invoke("RemoveWarning", 3f);
+    }
+
+    void RemoveWarning() {
+        generatorWarning.enabled = false;
     }
 }
