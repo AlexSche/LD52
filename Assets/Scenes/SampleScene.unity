@@ -1335,8 +1335,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.5, y: 1}
+  m_Offset: {x: 0, y: -0.06}
+  m_Size: {x: 0.5, y: 0.8}
   m_Direction: 0
 --- !u!212 &2026124169
 SpriteRenderer:
@@ -1418,6 +1418,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 3
+  map: {fileID: 507241367}
 --- !u!114 &2026124172
 MonoBehaviour:
   m_ObjectHideFlags: 0
