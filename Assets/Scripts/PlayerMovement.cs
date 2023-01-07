@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     public float movementSpeed = 0.5f;
     private PlayerInput playerInput;
     private Vector2 moveDirection = Vector2.zero;
+    private Vector3 velocity = Vector3.zero;
     private Rigidbody2D rb2D;
 
     private void Awake() => playerInput = new PlayerInput();
@@ -29,8 +30,12 @@ public class PlayerMovement : MonoBehaviour
     void Move(CallbackContext context) {
         moveDirection = playerInput.Player.Move.ReadValue<Vector2>();
         if (moveDirection.x != 0) {
-            //rb2D.MovePosition(new Vector2(transform.position.x, transform.position.y) + moveDirection * movementSpeed);
-            rb2D.velocity = new Vector2(transform.position.x, transform.position.y) + moveDirection * movementSpeed;
+            // Move the character by finding the target velocity
+			Vector3 targetVelocity = new Vector2(moveDirection.x * movementSpeed, rb2D.velocity.y);
+			// And then smoothing it out and applying it to the character
+			//rb2D.velocity = Vector3.SmoothDamp(rb2D.velocity, targetVelocity, ref velocity, 3);
+            // Test without smoothing since it doesnt work
+            rb2D.velocity = targetVelocity;
         }
     }
 }
