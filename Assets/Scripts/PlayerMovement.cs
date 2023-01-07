@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UI;
 using static UnityEngine.InputSystem.InputAction;
 
 public class PlayerMovement : MonoBehaviour
@@ -11,10 +10,10 @@ public class PlayerMovement : MonoBehaviour
     public Tilemap map;
     public Tilemap background;
     public TileBase ladder;
-    public Text collectedDiamondsText;
     private PlayerInput playerInput;
     private Vector2 moveDirection = Vector2.zero;
     private Vector3 velocity = Vector3.zero;
+    private int collectedDiamonds = 0;
     private bool isMoving;
     private Rigidbody2D rb2D;
 
@@ -29,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
         playerInput.Player.Move.started += ctx => SetIsMoving(ctx);
         playerInput.Player.Move.canceled += ctx => SetIsNotMoving(ctx);
         playerInput.Player.Fire.performed += ctx => Dig(ctx);
+        playerInput.Player.Return.performed += ctx => ReturnDiamonds(ctx);
     }
 
     // Update is called once per frame
@@ -37,8 +37,6 @@ public class PlayerMovement : MonoBehaviour
         if (isMoving) {
             Move(new CallbackContext());
         }
-        int amount = PlayerPrefs.GetInt("collectedDiamonds", 0);
-        collectedDiamondsText.text = amount.ToString();
     }
 
     private void SetIsMoving(CallbackContext context) => isMoving = true;
@@ -81,8 +79,7 @@ public class PlayerMovement : MonoBehaviour
             TileBase tileToDestory = map.GetTile(gridPosition);
             if (tileToDestory.name == "Diamonds") {
                 // Collect diamonds
-                PlayerPrefs.SetInt("collectedDiamonds", PlayerPrefs.GetInt("collectedDiamonds",0) + 3);
-                PlayerPrefs.Save();
+                collectedDiamonds += 3;
             }
             map.SetTile(gridPosition,null);
         }
@@ -90,5 +87,38 @@ public class PlayerMovement : MonoBehaviour
         if (moveDirection.y < 0) {
             background.SetTile(gridPosition,ladder);
         }
+    }
+
+    void ReturnDiamonds(CallbackContext context) {
+        if (IsNearGenerator()) {
+            SaveCollectedDiamonds();
+        } else {
+            Debug.Log("Get near a generator!");
+        }
+    }
+
+    bool IsNearGenerator() {
+        // Find tiles next to player
+        for (int i = -1; i<1; i++) {
+            for (int j = -1; j<1; j++) {
+                Vector2 direction = new Vector2(i,j);
+                Vector2 tileNextTo = new Vector2(transform.position.x, transform.position.y) + direction;
+                Vector3Int gridPosition = map.WorldToCell(tileNextTo);
+                if (map.HasTile(gridPosition)) {
+                    // If tile is generator
+                    TileBase isGenerator = map.GetTile(gridPosition);
+                    if (isGenerator.name == "Generator") {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    void SaveCollectedDiamonds() {
+        PlayerPrefs.SetInt("collectedDiamonds", PlayerPrefs.GetInt("collectedDiamonds",0) + collectedDiamonds);
+        PlayerPrefs.Save();
+        collectedDiamonds = 0;
     }
 }
