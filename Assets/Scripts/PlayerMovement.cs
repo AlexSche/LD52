@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using static UnityEngine.InputSystem.InputAction;
 
 public class PlayerMovement : MonoBehaviour
@@ -10,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public Tilemap map;
     public Tilemap background;
     public TileBase ladder;
+    public Text collectedDiamondsText;
     private PlayerInput playerInput;
     private Vector2 moveDirection = Vector2.zero;
     private Vector3 velocity = Vector3.zero;
@@ -35,6 +37,9 @@ public class PlayerMovement : MonoBehaviour
         if (isMoving) {
             Move(new CallbackContext());
         }
+        int amount = PlayerPrefs.GetInt("collectedDiamonds", 0);
+        Debug.Log(amount);
+        collectedDiamondsText.text = amount.ToString();
     }
 
     private void SetIsMoving(CallbackContext context) => isMoving = true;
@@ -77,7 +82,9 @@ public class PlayerMovement : MonoBehaviour
             // If tile contains resources -> collect
             TileBase tileToDestory = map.GetTile(gridPosition);
             if (tileToDestory.name == "Diamonds") {
-                Debug.Log("collect!");
+                // Collect diamonds
+                PlayerPrefs.SetInt("collectedDiamonds", PlayerPrefs.GetInt("collectedDiamonds",0) + 3);
+                PlayerPrefs.Save();
             }
             map.SetTile(gridPosition,null);
         }
