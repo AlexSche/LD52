@@ -90,7 +90,7 @@ public class PlayerMovement : MonoBehaviour
                 winningDiamond = true;
             }
             // If tile is destroyable
-            if (tileToDestory.name == "Dirt" || tileToDestory.name == "Diamonds") {
+            if (tileToDestory.name == "Dirt" || tileToDestory.name == "Diamonds" || tileToDestory.name == "IDK") {
             // Remove looked at tile
             map.SetTile(gridPosition,null);
             }
