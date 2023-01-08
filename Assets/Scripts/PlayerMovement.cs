@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using static UnityEngine.InputSystem.InputAction;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,12 +12,13 @@ public class PlayerMovement : MonoBehaviour
     public Tilemap map;
     public Tilemap background;
     public TileBase ladder;
-    public Text generatorWarning;
+    public Text warning;
     private PlayerInput playerInput;
     private Vector2 moveDirection = Vector2.zero;
     private Vector3 velocity = Vector3.zero;
     private int collectedDiamonds = 0;
     private bool isMoving;
+    private bool winningDiamond = false;
     private Rigidbody2D rb2D;
 
     private void Awake() => playerInput = new PlayerInput();
@@ -25,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PlayerPrefs.SetInt("collectedDiamonds", 30);
         rb2D = GetComponent<Rigidbody2D>();
         playerInput.Player.Move.performed += ctx => Move(ctx);
         playerInput.Player.Move.started += ctx => SetIsMoving(ctx);
@@ -74,7 +77,6 @@ public class PlayerMovement : MonoBehaviour
         Vector2 tileUnderneath = new Vector2(transform.position.x, transform.position.y) + moveDirection;
         // Translate worldPosition to gridPosition
         Vector3Int gridPosition = map.WorldToCell(tileUnderneath);
-        // Remove looked at tile
         // Check if position is on a tile
         if (map.HasTile(gridPosition)) {
             // If tile contains resources -> collect
@@ -83,17 +85,38 @@ public class PlayerMovement : MonoBehaviour
                 // Collect diamonds
                 collectedDiamonds += 3;
             }
+            if (tileToDestory.name == "IDK") {
+                // Collected winning diamond
+                winningDiamond = true;
+            }
+            // If tile is destroyable
+            if (tileToDestory.name == "Dirt" || tileToDestory.name == "Diamonds" || tileToDestory.name == "IDK") {
+            // Remove looked at tile
             map.SetTile(gridPosition,null);
+            }
         }
         // If direction was down place a ladder
         if (moveDirection.y < 0) {
             background.SetTile(gridPosition,ladder);
+            // And add a ladder at player
+            Vector3Int gridPositionPlayer= map.WorldToCell(transform.position);
+            background.SetTile(gridPositionPlayer,ladder);
+        }
+        // If direction is up place a ladder
+        if (moveDirection.y > 0) {
+            background.SetTile(gridPosition,ladder);
+            // And add a ladder at player
+            Vector3Int gridPositionPlayer= map.WorldToCell(transform.position);
+            background.SetTile(gridPositionPlayer,ladder);
         }
     }
 
     void ReturnDiamonds(CallbackContext context) {
         if (IsNearGenerator()) {
             SaveCollectedDiamonds();
+            if (winningDiamond) {
+                SceneManager.LoadScene("WonScene");
+            }
         } else {
             ShowWarning("Get near a generator to return resources!");
         }
@@ -125,12 +148,12 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void ShowWarning(string msg) {
-        generatorWarning.text = msg;
-        generatorWarning.enabled = true;
+        warning.text = msg;
+        warning.enabled = true;
         Invoke("RemoveWarning", 3f);
     }
 
     void RemoveWarning() {
-        generatorWarning.enabled = false;
+        warning.enabled = false;
     }
 }
