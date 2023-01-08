@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PlayerPrefs.SetInt("collectedDiamonds", 30);
         rb2D = GetComponent<Rigidbody2D>();
         playerInput.Player.Move.performed += ctx => Move(ctx);
         playerInput.Player.Move.started += ctx => SetIsMoving(ctx);
