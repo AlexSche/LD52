@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using static UnityEngine.InputSystem.InputAction;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
     private int collectedDiamonds = 0;
     private bool isMoving;
+    private bool winningDiamond = false;
     private Rigidbody2D rb2D;
 
     private void Awake() => playerInput = new PlayerInput();
@@ -83,6 +85,10 @@ public class PlayerMovement : MonoBehaviour
                 // Collect diamonds
                 collectedDiamonds += 3;
             }
+            if (tileToDestory.name == "IDK") {
+                // Collected winning diamond
+                winningDiamond = true;
+            }
             // If tile is destroyable
             if (tileToDestory.name == "Dirt" || tileToDestory.name == "Diamonds") {
             // Remove looked at tile
@@ -102,6 +108,9 @@ public class PlayerMovement : MonoBehaviour
     void ReturnDiamonds(CallbackContext context) {
         if (IsNearGenerator()) {
             SaveCollectedDiamonds();
+            if (winningDiamond) {
+                SceneManager.LoadScene("WonScene");
+            }
         } else {
             ShowWarning("Get near a generator to return resources!");
         }
