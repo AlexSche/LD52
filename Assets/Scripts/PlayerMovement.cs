@@ -101,10 +101,13 @@ public class PlayerMovement : MonoBehaviour
             // And add a ladder at player
             Vector3Int gridPositionPlayer= map.WorldToCell(transform.position);
             background.SetTile(gridPositionPlayer,ladder);
-            // And add a ladder above
-            Vector2 tileAbove = new Vector2(transform.position.x, transform.position.y + 1);
-            Vector3Int gridPositionAbove = map.WorldToCell(tileAbove);
-            background.SetTile(gridPositionAbove,ladder);
+        }
+        // If direction is up place a ladder
+        if (moveDirection.y > 0) {
+            background.SetTile(gridPosition,ladder);
+            // And add a ladder at player
+            Vector3Int gridPositionPlayer= map.WorldToCell(transform.position);
+            background.SetTile(gridPositionPlayer,ladder);
         }
     }
 
