@@ -74,7 +74,6 @@ public class PlayerMovement : MonoBehaviour
         Vector2 tileUnderneath = new Vector2(transform.position.x, transform.position.y) + moveDirection;
         // Translate worldPosition to gridPosition
         Vector3Int gridPosition = map.WorldToCell(tileUnderneath);
-        // Remove looked at tile
         // Check if position is on a tile
         if (map.HasTile(gridPosition)) {
             // If tile contains resources -> collect
@@ -83,7 +82,11 @@ public class PlayerMovement : MonoBehaviour
                 // Collect diamonds
                 collectedDiamonds += 3;
             }
+            // If tile is destroyable
+            if (tileToDestory.name == "Dirt" || tileToDestory.name == "Diamonds") {
+            // Remove looked at tile
             map.SetTile(gridPosition,null);
+            }
         }
         // If direction was down place a ladder
         if (moveDirection.y < 0) {
