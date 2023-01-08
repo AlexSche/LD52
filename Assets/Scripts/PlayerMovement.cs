@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public Tilemap map;
     public Tilemap background;
     public TileBase ladder;
-    public Text generatorWarning;
+    public Text warning;
     private PlayerInput playerInput;
     private Vector2 moveDirection = Vector2.zero;
     private Vector3 velocity = Vector3.zero;
@@ -133,12 +133,12 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void ShowWarning(string msg) {
-        generatorWarning.text = msg;
-        generatorWarning.enabled = true;
+        warning.text = msg;
+        warning.enabled = true;
         Invoke("RemoveWarning", 3f);
     }
 
     void RemoveWarning() {
-        generatorWarning.enabled = false;
+        warning.enabled = false;
     }
 }

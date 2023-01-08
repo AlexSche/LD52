@@ -56585,7 +56585,7 @@ MonoBehaviour:
   map: {fileID: 507241367}
   background: {fileID: 1347398979}
   ladder: {fileID: 11400000, guid: 7507bacaa4fc64ee79e37aa59b301a39, type: 2}
-  generatorWarning: {fileID: 1758609525}
+  warning: {fileID: 0}
 --- !u!114 &2026124172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56629,6 +56629,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collectedDiamondsText: {fileID: 488487926}
+  warning: {fileID: 1758609525}
 --- !u!1 &2130844943
 GameObject:
   m_ObjectHideFlags: 0
